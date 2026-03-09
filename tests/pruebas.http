@@ -1,0 +1,140 @@
+### ============================================================
+### PRUEBAS PROYECTO B - Chatbot Multiherramienta
+### Ángel Ortega - IES Hermenegildo Lanz - 2º DAW
+### ============================================================
+### Uso: Abrir con la extensión REST Client de VS Code
+### URL base: http://localhost:5679/webhook-test/chatbot (test)
+###           http://localhost:5679/webhook/chatbot (producción)
+### ============================================================
+
+
+### -------------------------------------------------------
+### 🌤️ CLIMA - Prueba 1: Ciudad española
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "que tiempo hace en Madrid"}
+
+### -------------------------------------------------------
+### 🌤️ CLIMA - Prueba 2: Ciudad extranjera
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "como esta el clima en Londres"}
+
+### -------------------------------------------------------
+### 🌤️ CLIMA - Prueba 3: Sin ciudad especificada
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "va a llover mañana?"}
+
+
+### -------------------------------------------------------
+### 🌍 PAÍS - Prueba 1: País asiático
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "dime algo sobre Japon"}
+
+### -------------------------------------------------------
+### 🌍 PAÍS - Prueba 2: País europeo
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "cuéntame sobre Francia"}
+
+### -------------------------------------------------------
+### 🌍 PAÍS - Prueba 3: Pregunta sobre capital
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "cual es la capital de Alemania"}
+
+
+### -------------------------------------------------------
+### 📚 WIKIPEDIA - Prueba 1: Personaje histórico
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "quien fue Einstein"}
+
+### -------------------------------------------------------
+### 📚 WIKIPEDIA - Prueba 2: Concepto científico
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "que es la fotosintesis"}
+
+### -------------------------------------------------------
+### 📚 WIKIPEDIA - Prueba 3: Lugar histórico
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "cuéntame sobre la Torre Eiffel"}
+
+
+### -------------------------------------------------------
+### 😄 CHISTE - Prueba 1: Petición directa
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "cuentame un chiste"}
+
+### -------------------------------------------------------
+### 😄 CHISTE - Prueba 2: Petición informal
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "dime algo gracioso"}
+
+### -------------------------------------------------------
+### 😄 CHISTE - Prueba 3: Petición con contexto
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "quiero reirme un poco"}
+
+
+### -------------------------------------------------------
+### 💬 GENERAL - Prueba 1: Saludo
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "hola como estas"}
+
+### -------------------------------------------------------
+### 💬 GENERAL - Prueba 2: Pregunta abierta
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "que pelicula me recomiendas ver hoy"}
+
+### -------------------------------------------------------
+### 💬 GENERAL - Prueba 3: Despedida
+### -------------------------------------------------------
+POST http://localhost:5679/webhook-test/chatbot
+Content-Type: application/json
+
+{"mensaje": "hasta luego y gracias"}
+
+
+### -------------------------------------------------------
+### 🗄️ VERIFICAR POSTGRESQL - Ver últimas conversaciones
+### (Ejecutar en terminal)
+### docker exec -it docker-postgres-1 psql -U chatbot -d chatbot_db -c "SELECT id, mensaje_usuario, intencion, timestamp FROM conversaciones ORDER BY timestamp DESC LIMIT 10;"
+### -------------------------------------------------------

@@ -1,0 +1,551 @@
+{
+  "name": "Proyecto A",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "chatbot_rag",
+          "mode": "list",
+          "cachedResultName": "chatbot_rag"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        976,
+        48
+      ],
+      "id": "66694bfc-654a-4245-befd-a608a516e375",
+      "name": "Qdrant Vector Store",
+      "credentials": {
+        "qdrantApi": {
+          "id": "0OQolSTa3O29neCf",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        928,
+        240
+      ],
+      "id": "0852c7f6-6c66-4467-9ea6-d064a103c93a",
+      "name": "Embeddings Ollama",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mulBT3qIGcYpDk6X",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $json.text }}",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        1088,
+        256
+      ],
+      "id": "6096c81c-eb2a-4f6b-a374-cbcd351d6def",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "binaryPropertyName": "File",
+        "destinationKey": "text",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        48
+      ],
+      "id": "7d72016b-edb6-4bdb-a2a1-d70b7bab5614",
+      "name": "Extract from File1"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $binary.File.fileName.toLowerCase() }}",
+                    "rightValue": ".pdf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "endsWith"
+                    },
+                    "id": "e84ca13a-7df9-4802-84bf-7f0b9f9df2a2"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "0cb0f1b4-a081-492b-97f1-7852c6b8788e",
+                    "leftValue": "={{ $binary.File.fileName.toLowerCase() }}",
+                    "rightValue": ".txt",
+                    "operator": {
+                      "type": "string",
+                      "operation": "endsWith"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        288,
+        32
+      ],
+      "id": "231c834b-6ff6-44d3-9413-af76446e2421",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "errorMessage": "\"Error de validación: El sistema RAG solo acepta documentos en formato .pdf o .txt.\""
+      },
+      "type": "n8n-nodes-base.stopAndError",
+      "typeVersion": 1,
+      "position": [
+        528,
+        224
+      ],
+      "id": "24042138-3a99-40ec-aa8c-edfe78b679df",
+      "name": "Stop and Error"
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "File",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        -128
+      ],
+      "id": "6ae188fe-94c4-4e12-a210-56c4bbc39e56",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "23b0f4d3-1588-4684-8efd-7304ac4dfd61",
+              "name": "text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        752,
+        -128
+      ],
+      "id": "4b7f4891-f3f8-4d5b-a631-2901a7b5a78f",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 100,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        1104,
+        416
+      ],
+      "id": "f5935a77-8c5f-4bdb-8101-9e7176eae9ab",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO documentos (nombre, num_chunks) VALUES ($1, $2);",
+        "options": {
+          "queryReplacement": "={{ $('Switch').item.json.File[0].filename }}, {{ $input.all().length }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        1328,
+        48
+      ],
+      "id": "68366ec9-e83c-4b82-b0bf-de8a6f2e84e4",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "a8Ld7tSwnr3HcyRb",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "RAG FINAL DE CURSO",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "File",
+              "fieldType": "file"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        96,
+        32
+      ],
+      "id": "eb28dcbe-2485-428f-9dfe-0330ac22f133",
+      "name": "form",
+      "webhookId": "503b8580-b30b-44c7-bdeb-bd042a4c3e34"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=<|system|>\nEres un asistente educativo especializado. Tu única fuente de conocimiento son los documentos recuperados por tu herramienta de búsqueda.\n\n## REGLAS ESTRICTAS\n1. SIEMPRE llama a la herramienta de búsqueda antes de responder, sin excepción.\n2. Responde SOLO con información presente en los documentos recuperados.\n3. NO uses conocimiento previo, NO inventes, NO supongas.\n4. Si los documentos no contienen la respuesta, di exactamente: \"Lo siento, no tengo información sobre eso en los documentos disponibles.\"\n\n## CÓMO RESPONDER\n- Sé claro, directo y educativo.\n- Si la información es parcial, indícalo: \"Según los documentos, solo tengo información sobre...\"\n- Cita brevemente de dónde viene la información cuando sea útil (ej: \"Según el documento X...\").\n- Usa un lenguaje adaptado al contexto educativo: simple, estructurado y sin ambigüedades.\n\n## LO QUE NUNCA DEBES HACER\n- Responder sin haber usado la herramienta de búsqueda.\n- Combinar información de los documentos con conocimiento propio.\n- Dar respuestas vagas para evitar decir \"no sé\".\n\nRecuerda: es mejor admitir que no tienes información que dar una respuesta incorrecta.\n\nAqui tienes el mensaje del usuario:\n{{ $json.body.pregunta }}\n<|end|>",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        240,
+        416
+      ],
+      "id": "604a509a-1fe6-4887-8c87-af8d8b4180d5",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": "llama3.1:latest",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        144,
+        624
+      ],
+      "id": "4f2a0ff2-4787-4a98-8b2b-e4322db29ec1",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mulBT3qIGcYpDk6X",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Herramienta para buscar información en la base de datos sobre los documentos",
+        "qdrantCollection": {
+          "__rl": true,
+          "value": "chatbot_rag",
+          "mode": "list",
+          "cachedResultName": "chatbot_rag"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreQdrant",
+      "typeVersion": 1.3,
+      "position": [
+        384,
+        640
+      ],
+      "id": "7f6d450a-78e2-41e9-9cbf-41df2fa643fd",
+      "name": "Qdrant Vector Store1",
+      "credentials": {
+        "qdrantApi": {
+          "id": "0OQolSTa3O29neCf",
+          "name": "QdrantApi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "nomic-embed-text:latest"
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOllama",
+      "typeVersion": 1,
+      "position": [
+        368,
+        784
+      ],
+      "id": "d2719f61-56dc-47da-9248-0962be253bbd",
+      "name": "Embeddings Ollama1",
+      "credentials": {
+        "ollamaApi": {
+          "id": "mulBT3qIGcYpDk6X",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "79ea6589-b7f4-46c4-a1a3-34f655ee222b",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -32,
+        416
+      ],
+      "id": "a03841d2-77ca-48ed-bc97-24fabbf1de1c",
+      "name": "Webhook",
+      "webhookId": "79ea6589-b7f4-46c4-a1a3-34f655ee222b"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        592,
+        416
+      ],
+      "id": "e7d3d185-110a-45a3-898c-025344eca01b",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Embeddings Ollama": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File1": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Extract from File1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Stop and Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Qdrant Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "form": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Qdrant Vector Store1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Ollama1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Qdrant Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "370106a2-64d8-4e35-9dba-9a088236f105",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "371149e0b622206fde8b6ddfac9808b78e9cd511d7327f475d0bcf6064417d68"
+  },
+  "id": "rotMOBBb49S4qmtc",
+  "tags": []
+}

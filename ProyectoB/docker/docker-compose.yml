@@ -11,6 +11,7 @@ services:
       - n8n_data:/home/node/.n8n
     depends_on:
       - postgres
+      - ollama
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -26,6 +27,15 @@ services:
     ports:
       - "5432:5432"
 
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    restart: unless-stopped
+
 volumes:
   n8n_data:
   postgres_data:
+  ollama_data:

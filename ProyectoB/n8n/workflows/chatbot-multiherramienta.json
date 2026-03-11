@@ -193,7 +193,7 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.3,
       "position": [
-        800,
+        816,
         -336
       ],
       "id": "a54c6daa-c2fa-42a1-8088-7b5240a2acb6",
@@ -285,7 +285,7 @@
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "={{ $json.response }}",
+        "responseBody": "={{ $json.respuesta_bot }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
@@ -335,7 +335,7 @@
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "={{ $json.response }}",
+        "responseBody": "={{ $json.respuesta_bot }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
@@ -415,13 +415,13 @@
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "={{ $json.response }}",
+        "responseBody": "={{ $json.respuesta_bot }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        1360,
+        1424,
         -16
       ],
       "id": "d59d28f1-66d5-4e8c-bbba-e2d5a1c825bc",
@@ -481,7 +481,7 @@
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "={{ $json.response }}",
+        "responseBody": "={{ $json.respuesta_bot }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
@@ -517,13 +517,13 @@
     {
       "parameters": {
         "respondWith": "text",
-        "responseBody": "={{ $json.response }}",
+        "responseBody": "={{ $json.respuesta_bot }}",
         "options": {}
       },
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        1360,
+        1264,
         320
       ],
       "id": "d6702dab-0b1a-40d2-b0f6-64be99f1f6dc",
@@ -545,7 +545,6 @@
         "columns": {
           "mappingMode": "defineBelow",
           "value": {
-            "id": 0,
             "mensaje_usuario": "={{ $('Webhook').item.json.body.mensaje }}",
             "intencion": "={{ $('Code in JavaScript').item.json.valor.intencion }}",
             "respuesta_bot": "={{ $json.response }}",
@@ -563,7 +562,7 @@
               "display": true,
               "type": "number",
               "canBeUsedToMatch": true,
-              "removed": false
+              "removed": true
             },
             {
               "id": "mensaje_usuario",
@@ -1291,7 +1290,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "803d7c45-b3fd-4087-b6f1-baca7d077c80",
+  "versionId": "9cf43e8c-104e-4714-83fc-966a9b8d8d23",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "001832281bbc7048579921a81aed63868b339b1002043df12e3dff8433bc4044"

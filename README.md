@@ -24,6 +24,6 @@ Este repositorio contiene dos proyectos de automatización inteligente desarroll
 
 ## 🎥 Vídeo Demostración
 
-🔗 [Enlace al vídeo](https://youtube.com/ENLACE_AQUI)
+🔗 [Enlace al vídeo](https://youtu.be/uRJZ3TSULkM)
 
 ---
